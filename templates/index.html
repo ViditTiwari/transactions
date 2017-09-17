@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction - Analytics</title>
+    <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
+    <script src="/static/js/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="/static/semantic/semantic.min.js"></script>
+    
+<style>
+.margin-20{
+    margin-top: 20px;
+} 
+
+.margin-40{
+    margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<div class="margin-40"></div>
+
+<div class="ui container">
+
+    <div class="ui one column stackable center aligned page grid">
+        <div class="column twelve wide">
+            <div class="ui stacked segment">
+                <h2>Transaction Analytics</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="margin-40"></div>
+
+<div class="ui text container">
+ <h3 class="ui header">Basic Information</h2>
+
+    <table class="ui celled table">
+      <thead>
+        <tr><th>Information Attribute</th>
+        <th>Value</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="ui ribbon label">Number of orders site recieved</div>
+          </td>
+          <td>{{ basic_info.orders_no }}</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="ui ribbon label">Total amount of order recieved</div>
+          </td>
+          <td>{{ basic_info.total_amount }}</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="ui ribbon label">Names of the customers who ordered once and did not order again</div>
+          </td>
+          <td>
+              {% for name in basic_info.names_one_order %} 
+              <li>{{ name }} </li>
+              {% endfor %}
+          </td>
+        </tr>
+      </tbody>
+      
+    </table>
+
+ <h3 class="ui header">Distribution of Customers</h2>
+
+    <table class="ui celled table">
+      <thead>
+        <tr><th>Number of Orders</th>
+        <th>Count of Customers</th>
+      </tr></thead>
+      <tbody>
+        {% for key, value in distribution.items %}
+            <tr>
+              <td>
+                <div class="ui ribbon label">{{ key }}</div>
+              </td>
+              <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
+        
+      </tbody>
+      
+    </table>
+
+ <h3 class="ui header">Bar Graph of Distribution of Customers</h2>
+
+</div>
+
+<div class="margin-40"></div>
+
+<div class="ui one column stackable center aligned page grid">
+    <div class="column twelve wide">
+        <div id="graph" style="width:600px;height:500px;"></div>
+    </div>
+</div>
+
+<script>
+
+GRAPH = document.getElementById('graph');
+
+keys = [];
+values = [];
+
+{% for key, value in distribution.items %}
+    keys.push("{{key}}");
+    values.push(parseInt("{{value}}"));
+{% endfor %}
+
+var data = [
+  {
+    x:  keys,
+    y: values,
+    type: 'bar',
+  }
+];
+
+var layout = {
+    xaxis: { type: 'category' },
+    title: 'Distribution of Customers'
+};
+
+Plotly.newPlot(GRAPH, data, layout);
+
+</script>
+
+
+
+
+</body>
+</html>
+
